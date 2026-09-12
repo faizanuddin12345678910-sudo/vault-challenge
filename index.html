@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Vault Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 2s ease-in forwards;
+        }
+        .keypad-btn {
+            transition: all 0.1s ease-in-out;
+        }
+        .keypad-btn:active {
+            transform: scale(0.95);
+            background-color: #4b5563; /* tailwind gray-600 */
+        }
+    </style>
+</head>
+<body id="main-body" class="bg-slate-800 text-white h-screen w-screen flex flex-col items-center justify-center font-sans overflow-hidden transition-colors duration-1000">
+
+    <!-- STAGE 1: The Math Question -->
+    <div id="stage-math" class="flex flex-col items-center justify-center w-full max-w-md p-8 bg-slate-700 rounded-2xl shadow-2xl transition-opacity duration-500">
+        <h1 class="text-3xl font-bold mb-2 text-blue-400">Security Check</h1>
+        <p class="text-slate-300 mb-8 text-center">Answer the following question to access the vault.</p>
+        
+        <div class="text-5xl font-mono mb-8 bg-slate-800 py-4 px-8 rounded-lg shadow-inner">
+            8 &times; 7 = ?
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 w-full">
+            <button onclick="checkMath(48)" class="py-3 px-6 bg-slate-600 hover:bg-blue-500 rounded-lg text-xl font-bold shadow-md transition-colors">48</button>
+            <button onclick="checkMath(54)" class="py-3 px-6 bg-slate-600 hover:bg-blue-500 rounded-lg text-xl font-bold shadow-md transition-colors">54</button>
+            <button onclick="checkMath(56)" class="py-3 px-6 bg-slate-600 hover:bg-blue-500 rounded-lg text-xl font-bold shadow-md transition-colors">56</button>
+            <button onclick="checkMath(62)" class="py-3 px-6 bg-slate-600 hover:bg-blue-500 rounded-lg text-xl font-bold shadow-md transition-colors">62</button>
+        </div>
+        
+        <p id="math-error" class="text-red-400 mt-6 h-6 font-semibold"></p>
+    </div>
+
+    <!-- STAGE 2: The Vault -->
+    <div id="stage-vault" class="hidden flex-col items-center justify-center w-full max-w-sm p-6 bg-gray-300 rounded-lg shadow-[0_0_50px_rgba(0,0,0,0.8)] relative border-8 border-gray-400">
+        <!-- Sticky Note Hint -->
+        <div class="absolute -top-6 -right-6 bg-yellow-200 text-yellow-900 font-mono p-3 text-sm rounded shadow-md transform rotate-6">
+            Code:<br>
+            <strong>1 3 3 7</strong>
+        </div>
+
+        <h2 class="text-gray-800 text-2xl font-black uppercase tracking-widest mb-4">Secure Vault</h2>
+        
+        <!-- Keypad Display -->
+        <div id="vault-display" class="w-full bg-green-950 border-4 border-gray-500 h-16 rounded mb-6 flex items-center justify-center text-green-400 text-4xl font-mono tracking-[0.5em] shadow-inner">
+            _ _ _ _
+        </div>
+
+        <!-- Keypad Buttons -->
+        <div class="grid grid-cols-3 gap-3 w-full">
+            <button onclick="pressKey('1')" class="keypad-btn py-4 bg-gray-200 border-2 border-gray-400 text-gray-800 text-2xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]">1</button>
+            <button onclick="pressKey('2')" class="keypad-btn py-4 bg-gray-200 border-2 border-gray-400 text-gray-800 text-2xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]">2</button>
+            <button onclick="pressKey('3')" class="keypad-btn py-4 bg-gray-200 border-2 border-gray-400 text-gray-800 text-2xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]">3</button>
+            <button onclick="pressKey('4')" class="keypad-btn py-4 bg-gray-200 border-2 border-gray-400 text-gray-800 text-2xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]">4</button>
+            <button onclick="pressKey('5')" class="keypad-btn py-4 bg-gray-200 border-2 border-gray-400 text-gray-800 text-2xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]">5</button>
+            <button onclick="pressKey('6')" class="keypad-btn py-4 bg-gray-200 border-2 border-gray-400 text-gray-800 text-2xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]">6</button>
+            <button onclick="pressKey('7')" class="keypad-btn py-4 bg-gray-200 border-2 border-gray-400 text-gray-800 text-2xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]">7</button>
+            <button onclick="pressKey('8')" class="keypad-btn py-4 bg-gray-200 border-2 border-gray-400 text-gray-800 text-2xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]">8</button>
+            <button onclick="pressKey('9')" class="keypad-btn py-4 bg-gray-200 border-2 border-gray-400 text-gray-800 text-2xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]">9</button>
+            <button onclick="clearVault()" class="keypad-btn py-4 bg-red-400 border-2 border-red-500 text-red-900 text-xl font-bold rounded shadow-[0_4px_0_rgba(239,68,68,1)]">CLR</button>
+            <button onclick="pressKey('0')" class="keypad-btn py-4 bg-gray-200 border-2 border-gray-400 text-gray-800 text-2xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]">0</button>
+        <button disabled class="keypad-btn py-4 bg-gray-300 border-2 border-gray-400 text-gray-400 text-xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]"></button>
+    </div>
+</div>
+
+<!-- STAGE 3: The Reveal -->
+<div id="stage-fool" class="hidden flex items-center justify-center w-full h-full p-6">
+    <!-- Replace src URL below with your own custom picture link -->
+    <img id="fool-img" 
+         src="https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?auto=format&fit=crop&w=800&q=80" 
+         alt="Vault Reveal" 
+         class="max-w-xs md:max-w-md lg:max-w-lg w-full h-auto rounded-2xl shadow-[0_0_60px_rgba(255,255,255,0.15)] opacity-0 border-2 border-slate-800 object-cover"
+         onerror="this.src='https://placehold.co/600x600/111827/ffffff?text=Your+Picture+Here'">
+</div>
+
+<script>
+    // =========================================================
+    // ⚙️ EASY CUSTOMIZATION CONFIGURATION
+    // Modify any of the values below to customize your game!
+    // =========================================================
+    const CONFIG = {
+        // Stage 1: Math Question & Answer
+        questionText: "8 × 7 = ?",
+        correctAnswer: 56,
+
+        // Stage 2: Vault Passcode (4 digits)
+        vaultCode: "1337",
+
+        // Stage 3: Image URL (Replace with your custom image link)
+        imageUrl: "https://thumbs.dreamstime.com/b/take-care-your-health-illustration-design-over-white-background-36267476.jpg?w=576"
+    };
+
+    // -- DOM Elements --
+    const stageMath = document.getElementById('stage-math');
+    const stageVault = document.getElementById('stage-vault');
+    const stageFool = document.getElementById('stage-fool');
+    const mainBody = document.getElementById('main-body');
+    const mathError = document.getElementById('math-error');
+    const vaultDisplay = document.getElementById('vault-display');
+    const foolImg = document.getElementById('fool-img');
+
+    // -- Stage 1 Logic: Math --
+    function checkMath(answer) {
+        if (answer === CONFIG.correctAnswer) {
+            // Correct answer! Fade out math, fade in vault
+            mathError.innerText = "";
+            stageMath.classList.add('hidden');
+            stageVault.classList.remove('hidden');
+            stageVault.classList.add('flex');
+        } else {
+            // Wrong answer
+            mathError.innerText = "Incorrect. Try again.";
+            // Clear error message after 2 seconds
+            setTimeout(() => {
+                mathError.innerText = "";
+            }, 2000);
+        }
+    }
+
+    // -- Stage 2 Logic: Vault Keypad --
+    let currentCode = "";
+
+    function pressKey(num) {
+        if (currentCode.length < 4) {
+            currentCode += num;
+            updateDisplay();
+        }
+        
+        // If code is complete, check it
+        if (currentCode.length === 4) {
+            setTimeout(checkVaultCode, 200); // slight delay so user sees the final digit
+        }
+    }
+
+    function clearVault() {
+        currentCode = "";
+        updateDisplay();
+        vaultDisplay.classList.remove('text-red-500');
+        vaultDisplay.classList.add('text-green-400');
+    }
+
+    function updateDisplay() {
+        // Pad the current code with underscores to always show 4 slots
+        let displayStr = currentCode.padEnd(4, '_');
+        // Split into array and join with spaces for tracking
+        vaultDisplay.innerText = displayStr.split('').join('');
+    }
+
+    function checkVaultCode() {
+        if (currentCode === CONFIG.vaultCode) {
+            // SUCCESS! Transition to Stage 3
+            triggerFinalSequence();
+        } else {
+            // FAILURE! Show error
+            vaultDisplay.innerText = "ERR ";
+            vaultDisplay.classList.remove('text-green-400');
+            vaultDisplay.classList.add('text-red-500');
+            
+            // Reset after 1 second
+            setTimeout(() => {
+                clearVault();
+            }, 1000);
+        }
+    }
+
+    // -- Stage 3 Logic: The Reveal --
+    function triggerFinalSequence() {
+        // Hide the vault
+        stageVault.classList.add('hidden');
+        stageVault.classList.remove('flex');
+        
+        // Turn the background entirely black
+        mainBody.classList.remove('bg-slate-800');
+        mainBody.classList.add('bg-black');
+
+        // Apply picture from CONFIG if available
+        if (CONFIG.imageUrl) {
+            foolImg.src = CONFIG.imageUrl;
+        }
+
+        // Show the blank stage
+        stageFool.classList.remove('hidden');
+        
+        // Trigger the fade in of the image after a brief pause for dramatic effect
+        setTimeout(() => {
+            foolImg.classList.add('fade-in');
+        }, 1000);
+    }
+</script>
+</body>
+</html>
