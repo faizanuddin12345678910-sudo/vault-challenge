@@ -24,6 +24,9 @@
 </head>
 <body id="main-body" class="bg-slate-800 text-white h-screen w-screen flex flex-col items-center justify-center font-sans overflow-hidden transition-colors duration-1000">
 
+    <!-- Audio element for stage sound (root page uses public/sounds) -->
+    <audio id="stage-audio" preload="auto" src="public/sounds/fart-9-228245.mp3"></audio>
+
     <!-- STAGE 1: The Math Question -->
     <div id="stage-math" class="flex flex-col items-center justify-center w-full max-w-md p-8 bg-slate-700 rounded-2xl shadow-2xl transition-opacity duration-500">
         <h1 class="text-3xl font-bold mb-2 text-blue-400">Security Check</h1>
@@ -71,19 +74,21 @@
             <button onclick="pressKey('9')" class="keypad-btn py-4 bg-gray-200 border-2 border-gray-400 text-gray-800 text-2xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]">9</button>
             <button onclick="clearVault()" class="keypad-btn py-4 bg-red-400 border-2 border-red-500 text-red-900 text-xl font-bold rounded shadow-[0_4px_0_rgba(239,68,68,1)]">CLR</button>
             <button onclick="pressKey('0')" class="keypad-btn py-4 bg-gray-200 border-2 border-gray-400 text-gray-800 text-2xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]">0</button>
-        <button disabled class="keypad-btn py-4 bg-gray-300 border-2 border-gray-400 text-gray-400 text-xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]"></button>
+            <button disabled class="keypad-btn py-4 bg-gray-300 border-2 border-gray-400 text-gray-400 text-xl font-bold rounded shadow-[0_4px_0_rgba(156,163,175,1)]"></button>
+        </div>
     </div>
-</div>
 
-<!-- STAGE 3: The Reveal -->
-<div id="stage-fool" class="hidden flex items-center justify-center w-full h-full p-6">
-    <!-- Replace src URL below with your own custom picture link -->
-    <img id="fool-img" 
-         src="https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?auto=format&fit=crop&w=800&q=80" 
-         alt="Vault Reveal" 
-         class="max-w-xs md:max-w-md lg:max-w-lg w-full h-auto rounded-2xl shadow-[0_0_60px_rgba(255,255,255,0.15)] opacity-0 border-2 border-slate-800 object-cover"
-         onerror="this.src='https://placehold.co/600x600/111827/ffffff?text=Your+Picture+Here'">
-</div>
+    <!-- STAGE 3: The Reveal -->
+    <div id="stage-fool" class="hidden flex items-center justify-center w-full h-full p-6">
+        <!-- Replace src URL below with your own custom picture link -->
+        <img id="fool-img" 
+             src="https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?auto=format&fit=crop&w=800&q=80" 
+             alt="Vault Reveal" 
+             class="max-w-xs md:max-w-md lg:max-w-lg w-full h-auto rounded-2xl shadow-[0_0_60px_rgba(255,255,255,0.15)] opacity-0 border-2 border-slate-800 object-cover"
+             onerror="this.src='https://placehold.co/600x600/111827/ffffff?text=Your+Picture+Here'">
+    </div>
+
+<script src="public/js/stage-sound.js"></script>
 
 <script>
     // =========================================================
@@ -119,6 +124,9 @@
             stageMath.classList.add('hidden');
             stageVault.classList.remove('hidden');
             stageVault.classList.add('flex');
+
+            // play success sound for completing stage 1 (if available)
+            try { if (window.triggerStageSound) window.triggerStageSound(); } catch(e) {}
         } else {
             // Wrong answer
             mathError.innerText = "Incorrect. Try again.";
@@ -162,6 +170,9 @@
         if (currentCode === CONFIG.vaultCode) {
             // SUCCESS! Transition to Stage 3
             triggerFinalSequence();
+
+            // play success sound for completing stage 2 (if available)
+            try { if (window.triggerStageSound) window.triggerStageSound(); } catch(e) {}
         } else {
             // FAILURE! Show error
             vaultDisplay.innerText = "ERR ";
@@ -196,6 +207,9 @@
         // Trigger the fade in of the image after a brief pause for dramatic effect
         setTimeout(() => {
             foolImg.classList.add('fade-in');
+
+            // play success sound for final reveal (if available)
+            try { if (window.triggerStageSound) window.triggerStageSound(); } catch(e) {}
         }, 1000);
     }
 </script>
