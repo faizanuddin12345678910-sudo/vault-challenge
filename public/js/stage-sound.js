@@ -1,9 +1,11 @@
 // stage-sound.js
 // Drop this file into your app and include it on pages where stages complete.
-// Place the MP3 at /sounds/fart-9-228245.mp3 (or update `soundUrl`).
+// Use a path that resolves correctly when index.html is served from the repo root.
 
 (function () {
-  const soundUrl = '/sounds/fart-9-228245.mp3';
+  // When index.html is at the repo root and the MP3 is at public/sounds/,
+  // use the following relative path so previews (raw.githack/raw.githubusercontent) load it correctly.
+  const soundUrl = 'public/sounds/fart-9-228245.mp3';
   const audio = new Audio(soundUrl);
   audio.preload = 'auto';
   audio.volume = 0.9; // adjust as needed
